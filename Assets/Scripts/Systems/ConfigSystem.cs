@@ -32,10 +32,22 @@ partial struct ConfigSystem : ISystem
         var terrain = CollectionHelper.CreateNativeArray<Entity>(groundMemAlloc, Allocator.Temp);
         ecb.Instantiate(config.Ground, terrain);
 
+
         int ix = 0;
         int iy = 0;
-        foreach (Entity e in terrain) { 
-                // now what?
+
+        foreach (Entity e in terrain) {
+
+            
+            LocalToWorldTransform ltwt = new LocalToWorldTransform();
+            ltwt.Value.Position = new float3(ix, 1, 1);
+            ltwt.Value.Scale = 1.0f;
+            ecb.SetComponent(e , new LocalToWorldTransform
+            {
+                Value = ltwt.Value
+            });
+
+            ix++;
         }
 
         state.Enabled = false;
