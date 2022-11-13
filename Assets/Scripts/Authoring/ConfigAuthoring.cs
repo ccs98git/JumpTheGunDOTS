@@ -11,7 +11,9 @@ class ConfigBaker : Baker<ConfigAuthoring>
 {
     public override void Bake(ConfigAuthoring authoring)
     {
-        AddComponent(new Config { Ground = GetEntity(authoring.GroundPrefab) } );
+        AddComponent(new Config { 
+            Ground = GetEntity(authoring.GroundPrefab)
+        });
 
 
     }

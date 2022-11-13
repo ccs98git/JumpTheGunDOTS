@@ -21,11 +21,22 @@ partial struct ConfigSystem : ISystem
     {
         var config = SystemAPI.GetSingleton<Config>();
 
+        int xScale = 5;
+        int yScale = 5;
+
+        int groundMemAlloc = xScale * yScale;
+
         var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
         var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
 
-        var terrain = CollectionHelper.CreateNativeArray<Entity>(10, Allocator.Temp); // 10 is a static value, should be amount of ground
+        var terrain = CollectionHelper.CreateNativeArray<Entity>(groundMemAlloc, Allocator.Temp);
         ecb.Instantiate(config.Ground, terrain);
+
+        int ix = 0;
+        int iy = 0;
+        foreach (Entity e in terrain) { 
+                // now what?
+        }
 
         state.Enabled = false;
     }
