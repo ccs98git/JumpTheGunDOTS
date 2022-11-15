@@ -1,9 +1,11 @@
+using System.Diagnostics;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
 using static UnityEngine.GraphicsBuffer;
+
 
 // Unmanaged systems can be BurstCompiled, tag needs to be on the struct itself, as well as derived methods of ISystem
 [BurstCompile]
@@ -40,14 +42,14 @@ partial struct ConfigSystem : ISystem
 
             
             LocalToWorldTransform ltwt = new LocalToWorldTransform();
-            ltwt.Value.Position = new float3(ix, 1, 1);
+            ltwt.Value.Position = new float3(ix, 1, iy);
             ltwt.Value.Scale = 1.0f;
             ecb.SetComponent(e , new LocalToWorldTransform
             {
                 Value = ltwt.Value
             });
-
-            ix++;
+            if (ix % 4 == 0 &&ix!=0) { iy++; ix = 0; }
+            else ix++;
         }
 
         state.Enabled = false;
