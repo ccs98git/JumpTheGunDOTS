@@ -3,6 +3,8 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
+using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
 
 // Unmanaged systems can be BurstCompiled, tag needs to be on the struct itself, as well as derived methods of ISystem
@@ -39,12 +41,18 @@ partial struct ConfigSystem : ISystem
         foreach (Entity e in terrain) {
 
             
-            LocalToWorldTransform ltwt = new LocalToWorldTransform();
-            ltwt.Value.Position = new float3(ix, 1, 1);
-            ltwt.Value.Scale = 1.0f;
-            ecb.SetComponent(e , new LocalToWorldTransform
+            
+            float3 Position = new float3(ix, 1, 1);
+            float3 newScale = new float3(1, 1, 1);
+            ecb.SetComponent(e, new Translation
             {
-                Value = ltwt.Value
+                Value = Position
+
+            });
+            ecb.SetComponent(e, new ScalePivot
+            {
+                Value = newScale
+
             });
 
             ix++;
