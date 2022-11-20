@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Linq;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
@@ -18,7 +19,7 @@ partial struct ConfigSystem : ISystem
     { }
     [BurstCompile]
     public void OnDestroy(ref SystemState state) { }
-    [BurstCompile]
+    //[BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         var config = SystemAPI.GetSingleton<Config>();
@@ -31,40 +32,61 @@ partial struct ConfigSystem : ISystem
         var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
         var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
 
-        var terrain = CollectionHelper.CreateNativeArray<Entity>(groundMemAlloc*2, Allocator.Temp);
+        var terrain = CollectionHelper.CreateNativeArray<Entity>(groundMemAlloc * 2, Allocator.Temp);
+
         ecb.Instantiate(config.Ground, terrain);
-
-
+        
+        bool[,] currentLayer = new bool[xScale, yScale];
         int ix = 0;
         int iy = 0;
         int ix2 = 0;
         int iy2 = 0;
 
         foreach (Entity e in terrain) {
-
-            
             LocalToWorldTransform ltwt = new LocalToWorldTransform();
             ltwt.Value.Position = new float3(ix, 1, iy);
             ltwt.Value.Scale = 1.0f;
+
+
             if (iy > 4)
             {
 
-                //LocalToWorldTransform ltwt1 = new LocalToWorldTransform();
                 ltwt.Value.Position = new float3(ix2, 1.2f, iy2);
                 ltwt.Value.Scale = 1.0f;
-                ecb.SetComponent(e, new LocalToWorldTransform
+
+                if (currentLayer[ix2, iy2])
                 {
-                    Value = ltwt.Value
-                });
+                    int r = UnityEngine.Random.Range(0,10);
+                    if (r >= 1)
+                    {
+                        ecb.SetComponent(e, new LocalToWorldTransform
+                        {
+                            Value = ltwt.Value
+                        });
+                        currentLayer[ix2, iy2] = true;
+                    }
+                    else {
+                        ecb.DestroyEntity(e);
+                        currentLayer[ix2, iy2] = false;
+                    }
+                }
+                else {
+                    ecb.DestroyEntity(e);
+                    currentLayer[ix2, iy2] = false;
+                }
+                
                 if (ix2 % 4 == 0 && ix2 != 0) { iy2++; ix2 = 0; }
                 else ix2++;
-                //iy++;
+
+                if (iy2 == 5) { break; } // <- not nessecary, but we had it anyway to solve the x7 memory massacre
             }
             else {
                 ecb.SetComponent(e, new LocalToWorldTransform
                 {
                     Value = ltwt.Value
                 });
+
+                currentLayer[ix, iy] = true;
             }
             
             
