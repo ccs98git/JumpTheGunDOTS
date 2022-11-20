@@ -31,12 +31,14 @@ partial struct ConfigSystem : ISystem
         var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
         var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
 
-        var terrain = CollectionHelper.CreateNativeArray<Entity>(groundMemAlloc, Allocator.Temp);
+        var terrain = CollectionHelper.CreateNativeArray<Entity>(groundMemAlloc*2, Allocator.Temp);
         ecb.Instantiate(config.Ground, terrain);
 
 
         int ix = 0;
         int iy = 0;
+        int ix2 = 0;
+        int iy2 = 0;
 
         foreach (Entity e in terrain) {
 
@@ -44,12 +46,32 @@ partial struct ConfigSystem : ISystem
             LocalToWorldTransform ltwt = new LocalToWorldTransform();
             ltwt.Value.Position = new float3(ix, 1, iy);
             ltwt.Value.Scale = 1.0f;
-            ecb.SetComponent(e , new LocalToWorldTransform
+            if (iy > 4)
             {
-                Value = ltwt.Value
-            });
+
+                //LocalToWorldTransform ltwt1 = new LocalToWorldTransform();
+                ltwt.Value.Position = new float3(ix2, 1.2f, iy2);
+                ltwt.Value.Scale = 1.0f;
+                ecb.SetComponent(e, new LocalToWorldTransform
+                {
+                    Value = ltwt.Value
+                });
+                if (ix2 % 4 == 0 && ix2 != 0) { iy2++; ix2 = 0; }
+                else ix2++;
+                //iy++;
+            }
+            else {
+                ecb.SetComponent(e, new LocalToWorldTransform
+                {
+                    Value = ltwt.Value
+                });
+            }
+            
+            
             if (ix % 4 == 0 &&ix!=0) { iy++; ix = 0; }
             else ix++;
+            
+            
         }
 
         state.Enabled = false;
