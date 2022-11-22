@@ -2,7 +2,9 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Rendering;
 using Unity.Transforms;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
@@ -46,6 +48,14 @@ partial struct ConfigSystem : ISystem
 
             float3 Position = new float3(ix, (heightIndex / 2.0f), iy);
             float3 newScale = new float3(1, 1+heightIndex, 1);
+
+            Vector3 flatColor = new Vector3(84f, 202f, 56f).normalized;
+            Color newColor = UnityEngine.Color.HSVToRGB(flatColor.x, flatColor.y, flatColor.z);
+
+            ecb.SetComponent(e, new URPMaterialPropertyBaseColor
+            {
+                Value = (UnityEngine.Vector4)newColor
+            }) ;
             ecb.SetComponent(e, new Translation
             {
                 Value = Position

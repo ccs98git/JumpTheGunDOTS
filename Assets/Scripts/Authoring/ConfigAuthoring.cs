@@ -1,4 +1,5 @@
 using Unity.Entities;
+using UnityEngine;
 
 // Authoring MonoBehaviors are regular gameObject components.
 class ConfigAuthoring : UnityEngine.MonoBehaviour
@@ -11,9 +12,11 @@ class ConfigBaker : Baker<ConfigAuthoring>
 {
     public override void Bake(ConfigAuthoring authoring)
     {
-        AddComponent(new Config { 
-            Ground = GetEntity(authoring.GroundPrefab)
-        });
+        AddComponent(new Config
+        {
+            Ground = GetEntity(authoring.GroundPrefab),
+            
+        }) ;
 
 
     }
