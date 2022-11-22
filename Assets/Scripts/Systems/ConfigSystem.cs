@@ -37,10 +37,15 @@ partial struct ConfigSystem : ISystem
 
         int ix = 0;
         int iy = 0;
+        float heightIndex = 1;
 
         foreach (Entity e in terrain) {
-            float3 Position = new float3(ix, 1, iy);
-            float3 newScale = new float3(1, 10, 1);
+
+            heightIndex = 0.2f * UnityEngine.Random.Range(1, 10); // <- random int between 1 and 9 (inclusive)
+
+
+            float3 Position = new float3(ix, (heightIndex / 2.0f), iy);
+            float3 newScale = new float3(1, 1+heightIndex, 1);
             ecb.SetComponent(e, new Translation
             {
                 Value = Position
