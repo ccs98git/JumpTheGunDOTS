@@ -39,17 +39,24 @@ partial struct ConfigSystem : ISystem
 
         int ix = 0;
         int iy = 0;
-        float heightIndex = 1;
+        float heightIndex = 0; // <- variable to be overwritten time and time again.
 
         foreach (Entity e in terrain) {
 
-            heightIndex = 0.2f * UnityEngine.Random.Range(1, 10); // <- random int between 1 and 9 (inclusive)
+            int rand = UnityEngine.Random.Range(1, 10);
+            heightIndex = 0.2f * rand; // <- random int between 1 and 9 (inclusive)
 
 
             float3 Position = new float3(ix, (heightIndex / 2.0f), iy);
             float3 newScale = new float3(1, 1+heightIndex, 1);
 
-            Vector3 flatColor = new Vector3(84f, 202f, 56f).normalized;
+            float heightColor = 85f;
+            for (int i = rand; i > 0; i--) {
+                heightColor -= 8f;
+            }
+            
+
+            Vector3 flatColor = new Vector3(heightColor, 202f, 56f).normalized; //<- not sure if/why this works, or if it works as intended.
             Color newColor = UnityEngine.Color.HSVToRGB(flatColor.x, flatColor.y, flatColor.z);
 
             ecb.SetComponent(e, new URPMaterialPropertyBaseColor
