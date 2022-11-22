@@ -40,12 +40,12 @@ partial struct ConfigSystem : ISystem
 
         foreach (Entity e in terrain) {
             float3 Position = new float3(ix, 1, iy);
-            float3 newScale = new float3(1, 1, 1);
+            float3 newScale = new float3(1, 10, 1);
             ecb.SetComponent(e, new Translation
             {
                 Value = Position
             });
-            ecb.SetComponent(e, new ScalePivotTranslation
+            ecb.AddComponent(e, new NonUniformScale
             {
                 Value = newScale
             });
