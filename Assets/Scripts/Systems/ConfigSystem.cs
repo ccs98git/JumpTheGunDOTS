@@ -25,8 +25,10 @@ partial struct ConfigSystem : ISystem
     {
         var config = SystemAPI.GetSingleton<Config>();
 
-        int xScale = 5;
-        int yScale = 5;
+        // -- Scale x and y, overwrite to scale up of need be --
+        int xScale = 15;
+        int yScale = 15;
+        // -----------------------------------------------------
 
         int groundMemAlloc = xScale * yScale;
 
@@ -39,7 +41,7 @@ partial struct ConfigSystem : ISystem
 
         int ix = 0;
         int iy = 0;
-        float heightIndex = 0; // <- variable to be overwritten time and time again.
+        float heightIndex = 0; // <- random height, multiplied by magnitude 2.0f
 
         foreach (Entity e in terrain) {
 
@@ -47,29 +49,10 @@ partial struct ConfigSystem : ISystem
             heightIndex = 0.2f * rand; // <- random int between 1 and 9 (inclusive)
 
 
+            // Transform Manipulation, place and scale.
             float3 Position = new float3(ix, (heightIndex / 2.0f), iy);
             float3 newScale = new float3(1, 1+heightIndex, 1);
-
-            float heightColor = 85f;
-            for (int i = rand; i > 0; i--) {
-                heightColor -= 8f;
-            }
             
-            
-
-            Vector3 flatColor = new Vector3(heightColor, 202f, 56f).normalized; //<- not sure if/why this works, or if it works as intended.
-            Color newColor = UnityEngine.Color.HSVToRGB(flatColor.x, flatColor.y, flatColor.z);
-
-            ecb.SetComponent(e, new URPMaterialPropertyBaseColor
-            {
-                Value = (UnityEngine.Vector4)newColor
-            });
-
-            ecb.SetComponent(e, new Ground
-            {
-                height = rand // <- assignment of height index
-            });
-
             ecb.SetComponent(e, new Translation
             {
                 Value = Position
@@ -79,7 +62,34 @@ partial struct ConfigSystem : ISystem
                 Value = newScale
             });
 
-            if (ix % 4 == 0 && ix != 0) { iy++; ix = 0; }
+
+
+            // Color Generation based on height:
+            float heightColor = 85f;
+            for (int i = rand; i > 0; i--)
+            {
+                heightColor -= 8f;
+            }
+            Vector3 flatColor = new Vector3(heightColor, 202f, 56f).normalized; //<- not sure if/why this works, or if it works as intended.
+            Color newColor = UnityEngine.Color.HSVToRGB(flatColor.x, flatColor.y, flatColor.z);
+
+            ecb.SetComponent(e, new URPMaterialPropertyBaseColor
+            {
+                Value = (UnityEngine.Vector4)newColor
+            });
+
+
+
+            // Set height in the Ground Component
+            ecb.SetComponent(e, new Ground
+            {
+                height = rand // <- assignment of height index
+            });
+
+            
+
+
+            if (ix % (xScale-1) == 0 && ix != 0) { iy++; ix = 0; }
             else ix++;
         }
         state.Enabled = false;
