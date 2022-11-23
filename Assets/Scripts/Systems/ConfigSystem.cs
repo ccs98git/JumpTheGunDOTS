@@ -26,8 +26,8 @@ partial struct ConfigSystem : ISystem
         var config = SystemAPI.GetSingleton<Config>();
 
         // -- Scale x and y, overwrite to scale up of need be --
-        int xScale = 15;
-        int yScale = 15;
+        int xScale = config.xScale;
+        int yScale = config.yScale;
         // -----------------------------------------------------
 
         int groundMemAlloc = xScale * yScale;

@@ -5,6 +5,9 @@ using UnityEngine;
 class ConfigAuthoring : UnityEngine.MonoBehaviour
 {
     public UnityEngine.GameObject GroundPrefab;
+    public UnityEngine.GameObject BallPrefab;
+    public int xScale;
+    public int yScale;
 }
 
 // bakers convert authoring mb's into entities and components
@@ -15,7 +18,10 @@ class ConfigBaker : Baker<ConfigAuthoring>
         AddComponent(new Config
         {
             Ground = GetEntity(authoring.GroundPrefab),
-            
+            Ball = GetEntity(authoring.BallPrefab),
+            xScale = authoring.xScale,
+            yScale = authoring.yScale
+
         }) ;
 
 
