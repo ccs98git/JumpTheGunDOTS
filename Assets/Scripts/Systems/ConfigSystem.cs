@@ -55,6 +55,7 @@ partial struct ConfigSystem : ISystem
                 heightColor -= 8f;
             }
             
+            
 
             Vector3 flatColor = new Vector3(heightColor, 202f, 56f).normalized; //<- not sure if/why this works, or if it works as intended.
             Color newColor = UnityEngine.Color.HSVToRGB(flatColor.x, flatColor.y, flatColor.z);
@@ -62,7 +63,13 @@ partial struct ConfigSystem : ISystem
             ecb.SetComponent(e, new URPMaterialPropertyBaseColor
             {
                 Value = (UnityEngine.Vector4)newColor
-            }) ;
+            });
+
+            ecb.SetComponent(e, new Ground
+            {
+                height = rand // <- assignment of height index
+            });
+
             ecb.SetComponent(e, new Translation
             {
                 Value = Position
@@ -71,6 +78,7 @@ partial struct ConfigSystem : ISystem
             {
                 Value = newScale
             });
+
             if (ix % 4 == 0 && ix != 0) { iy++; ix = 0; }
             else ix++;
         }
