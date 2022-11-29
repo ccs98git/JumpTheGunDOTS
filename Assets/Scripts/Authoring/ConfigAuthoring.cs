@@ -6,6 +6,7 @@ class ConfigAuthoring : UnityEngine.MonoBehaviour
 {
     public UnityEngine.GameObject GroundPrefab;
     public UnityEngine.GameObject BallPrefab;
+    public UnityEngine.GameObject CannonPrefab;
     public int xScale;
     public int yScale;
 }
@@ -19,6 +20,7 @@ class ConfigBaker : Baker<ConfigAuthoring>
         {
             Ground = GetEntity(authoring.GroundPrefab),
             Ball = GetEntity(authoring.BallPrefab),
+            Cannon = GetEntity(authoring.CannonPrefab),
             xScale = authoring.xScale,
             yScale = authoring.yScale
 

@@ -169,5 +169,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GroundPrefab: {fileID: 176346350372098373, guid: 7e6783b88f6c72e4e95de4fd3fb6df00, type: 3}
   BallPrefab: {fileID: 7131216976966369865, guid: 0b58d9e33a8c5f647945b5284e5606ae, type: 3}
+  CannonPrefab: {fileID: 0}
   xScale: 5
   yScale: 5

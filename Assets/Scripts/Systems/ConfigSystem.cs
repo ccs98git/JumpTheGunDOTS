@@ -79,12 +79,13 @@ partial struct ConfigSystem : ISystem
             });
 
 
-
-            // Set height in the Ground Component
+            // Set height + pos + bool in the Ground Component
             ecb.SetComponent(e, new Ground
             {
-                height = rand // <- assignment of height index
-            });
+                height = rand, // <- assignment of height index
+                hasCannon = false,
+                xy = (ix, iy)
+            }) ;
 
             
 
@@ -92,6 +93,40 @@ partial struct ConfigSystem : ISystem
             if (ix % (xScale-1) == 0 && ix != 0) { iy++; ix = 0; }
             else ix++;
         }
+
+        // cannon generation --
+        
+        int cannonMemAlloc = groundMemAlloc / 5;
+
+        var cannon = CollectionHelper.CreateNativeArray<Entity>(cannonMemAlloc, Allocator.Temp);
+        ecb.Instantiate(config.Cannon, cannon);
+
+        foreach (Entity e in cannon)
+        {
+
+            int randPosX = UnityEngine.Random.Range(0, xScale);
+            int randPosY = UnityEngine.Random.Range(0, yScale);
+
+            foreach (var groundE in SystemAPI.Query<Ground>()) { // <- query to find ALL ground Entities. Not terribly Random access friendly.
+                if (groundE.xy == (randPosX, randPosY)) { // <- Check for a position.
+                    if (groundE.hasCannon == false) // <- if no cannon, place one there.
+                    {
+                        Debug.Log("Hallelujah!");
+                        // place cannon
+                        float3 CannonPosition = new float3(randPosX, (groundE.height), randPosY);
+                        ecb.SetComponent(e, new Translation
+                        {
+                            Value = CannonPosition
+                        });
+
+                        groundE.setCannon();
+                    }
+                }
+            }
+
+            
+        }
+        
         state.Enabled = false;
     }
 
