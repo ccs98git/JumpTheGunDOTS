@@ -100,7 +100,7 @@ partial struct ConfigSystem : ISystem
 
         var cannon = CollectionHelper.CreateNativeArray<Entity>(cannonMemAlloc, Allocator.Temp);
         ecb.Instantiate(config.Cannon, cannon);
-
+        
         foreach (Entity e in cannon)
         {
 
