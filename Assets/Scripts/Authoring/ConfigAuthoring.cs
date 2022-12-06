@@ -9,6 +9,7 @@ class ConfigAuthoring : UnityEngine.MonoBehaviour
     public UnityEngine.GameObject CannonPrefab;
     public int xScale;
     public int yScale;
+    public int setupStage;
 }
 
 // bakers convert authoring mb's into entities and components
@@ -22,7 +23,8 @@ class ConfigBaker : Baker<ConfigAuthoring>
             Ball = GetEntity(authoring.BallPrefab),
             Cannon = GetEntity(authoring.CannonPrefab),
             xScale = authoring.xScale,
-            yScale = authoring.yScale
+            yScale = authoring.yScale,
+            setupStage = authoring.setupStage
 
         }) ;
 

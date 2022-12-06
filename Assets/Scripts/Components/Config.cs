@@ -9,5 +9,8 @@ struct Config : IComponentData
 
     public int xScale;
     public int yScale;
+
+
+    public int setupStage;
 }
 
