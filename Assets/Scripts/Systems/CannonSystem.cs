@@ -1,5 +1,6 @@
 using Unity.Burst;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Transforms;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -20,7 +21,19 @@ partial struct CannonSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        // Ball movement - only one ball!?
+        var config = SystemAPI.GetSingletonRW<Config>();
+        if (config.ValueRO.setupStage > 1) {
+            // Turn Cannons to Player object
+            foreach (var cannonE in SystemAPI.Query<CannonAspect>())
+            {
+                // -- Need a vector from cannon point to player transform. (only x and z value is nessecary. Dont wanna rotate on y)
+
+                cannonE.transform.Rotation = Quaternion.identity;
+            }
+        }
+
+
+        
 
 
 

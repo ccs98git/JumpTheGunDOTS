@@ -38,7 +38,7 @@ partial struct ConfigSystem : ISystem
         // -- Set setup stage --
         if (config.ValueRW.setupStage == 0)
         {
-            
+
             var terrain = CollectionHelper.CreateNativeArray<Entity>(groundMemAlloc, Allocator.Temp);
             ecb.Instantiate(config.ValueRW.Ground, terrain);
 
@@ -116,29 +116,38 @@ partial struct ConfigSystem : ISystem
 
                 foreach (var groundE in SystemAPI.Query<GroundAspect>())
                 { // <- query to find ALL ground Entities. Not terribly Random access friendly.
-                    
-                    
-                        if (groundE.xPos == randPosX && groundE.yPos == randPosY)
-                        { // <- Check for a position.
-                            if (groundE.hasCannon == false) // <- if no cannon, place one there.
-                            {
-                                // place cannon
-                                float3 CannonPosition = new float3(randPosX, (groundE.height * 0.2f) + 0.75f, randPosY);
-                                ecb.SetComponent(e, new Translation
-                                {
-                                    Value = CannonPosition
-                                });
 
-                                groundE.FlagCannon(true);
-                                
-                            }
+
+                    if (groundE.xPos == randPosX && groundE.yPos == randPosY)
+                    { // <- Check for a position.
+                        if (groundE.hasCannon == false) // <- if no cannon, place one there.
+                        {
+                            // place cannon
+                            float3 CannonPosition = new float3(randPosX, (groundE.height * 0.2f) + 0.75f, randPosY);
+                            ecb.SetComponent(e, new Translation
+                            {
+                                Value = CannonPosition
+                            });
+
+                            groundE.FlagCannon(true);
 
                         }
-                    
+
+                    }
+
                 }
             }
         }
-        else if (config.ValueRW.setupStage == 2) {
+        else if (config.ValueRW.setupStage == 2)
+        {
+            // player creation
+            var playerMem = CollectionHelper.CreateNativeArray<Entity>(1, Allocator.Temp);
+            ecb.Instantiate(config.ValueRW.Ball, playerMem);
+
+
+
+        }
+        else if (config.ValueRW.setupStage == 3) {
             state.Enabled = false;
         }
 
