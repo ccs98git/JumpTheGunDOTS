@@ -53,7 +53,6 @@ partial struct ConfigSystem : ISystem
                 int rand = UnityEngine.Random.Range(1, 10);
                 heightIndex = 0.2f * rand; // <- random int between 1 and 9 (inclusive)
 
-
                 // Transform Manipulation, place and scale.
                 float3 Position = new float3(ix, (heightIndex / 2.0f), iy);
                 float3 newScale = new float3(1, 1 + heightIndex, 1);
@@ -104,7 +103,7 @@ partial struct ConfigSystem : ISystem
 
             // cannon generation --
 
-            int cannonMemAlloc = groundMemAlloc / 5;
+            int cannonMemAlloc = groundMemAlloc / 10;
 
             var cannon = CollectionHelper.CreateNativeArray<Entity>(cannonMemAlloc, Allocator.Temp);
             ecb.Instantiate(config.ValueRW.Cannon, cannon);
@@ -124,7 +123,7 @@ partial struct ConfigSystem : ISystem
                             if (groundE.hasCannon == false) // <- if no cannon, place one there.
                             {
                                 // place cannon
-                                float3 CannonPosition = new float3(randPosX, (groundE.height), randPosY);
+                                float3 CannonPosition = new float3(randPosX, (groundE.height * 0.2f) + 0.75f, randPosY);
                                 ecb.SetComponent(e, new Translation
                                 {
                                     Value = CannonPosition
