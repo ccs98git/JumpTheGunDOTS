@@ -144,7 +144,16 @@ partial struct ConfigSystem : ISystem
             var playerMem = CollectionHelper.CreateNativeArray<Entity>(1, Allocator.Temp);
             ecb.Instantiate(config.ValueRW.Ball, playerMem);
 
+            // debug stuff
+            foreach (Entity e in playerMem) {
+                float3 DEBUG_playPosition = new float3(-1, 2, -1);
 
+                ecb.SetComponent(e, new Translation
+                {
+                    Value = DEBUG_playPosition
+                });
+            }
+           
 
         }
         else if (config.ValueRW.setupStage == 3) {
