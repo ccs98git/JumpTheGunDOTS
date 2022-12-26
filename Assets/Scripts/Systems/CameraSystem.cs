@@ -1,10 +1,7 @@
-using Unity.Burst;
-using Unity.Collections;
 using Unity.Entities;
-using Unity.Jobs;
-using Unity.Mathematics;
 using Unity.Transforms;
 
+// - Taken from the DOTS examples
 public partial class CameraSystem : SystemBase
 {
     protected override void OnUpdate()
@@ -12,8 +9,6 @@ public partial class CameraSystem : SystemBase
         new UpdateCameraJob().Run();
     }
 }
-
-
 
 [WithAll(typeof(Ball))]
 public partial struct UpdateCameraJob : IJobEntity

@@ -6,10 +6,10 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+// - Taken from the DOTS examples
 public class SimpleCameraFollow : MonoBehaviour
 {
     public Vector3 offset;
-    public float xRot;
     Vector3 targetPosition;
     private Camera mainCamera;
 
@@ -36,7 +36,6 @@ public class SimpleCameraFollow : MonoBehaviour
     private void LateUpdate()
     {
         mainCamera.gameObject.transform.position = targetPosition + offset;
-        mainCamera.transform.localRotation.eulerAngles.Set(xRot, 0, 0);
     }
 
     public void UpdateTargetPosition(float3 position)
