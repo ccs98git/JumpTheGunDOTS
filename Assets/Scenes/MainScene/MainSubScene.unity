@@ -172,3 +172,4 @@ MonoBehaviour:
   CannonPrefab: {fileID: 5274172679912965586, guid: 5d16ff16a5f8b1a42b7c371898026a8b, type: 3}
   xScale: 5
   yScale: 5
+  setupStage: 0
