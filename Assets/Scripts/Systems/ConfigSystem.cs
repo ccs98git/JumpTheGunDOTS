@@ -27,7 +27,6 @@ partial struct ConfigSystem : ISystem
 
         var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
         var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
-
         
         // -- Scale x and y, edit in the editor for variable entity counts --
         int xScale = config.ValueRO.xScale;
@@ -50,8 +49,8 @@ partial struct ConfigSystem : ISystem
             foreach (Entity e in terrain)
             {
 
-                int rand = UnityEngine.Random.Range(1, 10);
-                heightIndex = 0.2f * rand; // <- random int between 1 and 9 (inclusive)
+                int rand = UnityEngine.Random.Range(1, config.ValueRO.maxHeight);
+                heightIndex = 0.2f * rand; // <- random int between 1 and maxHeight (inclusive)
 
                 // Transform Manipulation, place and scale.
                 float3 Position = new float3(ix, (heightIndex / 2.0f), iy);
@@ -66,8 +65,6 @@ partial struct ConfigSystem : ISystem
                     Value = newScale
                 });
 
-
-
                 // Color Generation based on height:
                 float heightColor = 85f;
                 for (int i = rand; i > 0; i--)
@@ -81,7 +78,6 @@ partial struct ConfigSystem : ISystem
                 {
                     Value = (UnityEngine.Vector4)newColor
                 });
-
 
                 // Set height + pos + bool in the Ground Component
                 ecb.SetComponent(e, new Ground
@@ -108,7 +104,6 @@ partial struct ConfigSystem : ISystem
             var cannon = CollectionHelper.CreateNativeArray<Entity>(cannonMemAlloc, Allocator.Temp);
             ecb.Instantiate(config.ValueRW.Cannon, cannon);
 
-
             foreach (Entity e in cannon)
             {
                 int randPosX = UnityEngine.Random.Range(0, xScale);
@@ -116,7 +111,6 @@ partial struct ConfigSystem : ISystem
 
                 foreach (var groundE in SystemAPI.Query<GroundAspect>())
                 { // <- query to find ALL ground Entities. Not terribly Random access friendly.
-
 
                     if (groundE.xPos == randPosX && groundE.yPos == randPosY)
                     { // <- Check for a position.
@@ -132,9 +126,7 @@ partial struct ConfigSystem : ISystem
                             groundE.FlagCannon(true);
 
                         }
-
                     }
-
                 }
             }
         }
@@ -144,23 +136,20 @@ partial struct ConfigSystem : ISystem
             var playerMem = CollectionHelper.CreateNativeArray<Entity>(1, Allocator.Temp);
             ecb.Instantiate(config.ValueRW.Ball, playerMem);
 
-            // debug stuff
+            
             foreach (Entity e in playerMem) {
-                float3 DEBUG_playPosition = new float3(-1, 2, -1);
 
+                // debug location
+                float3 DEBUG_playPosition = new float3(-1, 2, -1);
                 ecb.SetComponent(e, new Translation
                 {
                     Value = DEBUG_playPosition
                 });
             }
-           
-
         }
         else if (config.ValueRW.setupStage == 3) {
             state.Enabled = false;
         }
-
-
 
         config.ValueRW.setupStage++;
 

@@ -11,6 +11,10 @@ struct Config : IComponentData
     public int yScale;
 
 
+    public int maxHeight;
+
     public int setupStage;
+
+    public int direction;
 }
 
