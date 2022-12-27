@@ -7,13 +7,13 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 // - Taken from the DOTS examples
-public class SimpleCameraFollow : MonoBehaviour
+public class CameraOperator : MonoBehaviour
 {
     public Vector3 offset;
     Vector3 targetPosition;
-    private Camera mainCamera;
+    public Camera mainCamera;
 
-    public static SimpleCameraFollow Instance;
+    public static CameraOperator Instance;
 
     private void Awake()
     {

@@ -15,6 +15,6 @@ public partial struct UpdateCameraJob : IJobEntity
 {
     public void Execute(ref Translation translation)
     {
-        SimpleCameraFollow.Instance.UpdateTargetPosition(translation.Value);
+        CameraOperator.Instance.UpdateTargetPosition(translation.Value);
     }
 }

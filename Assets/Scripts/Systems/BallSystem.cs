@@ -1,6 +1,8 @@
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Physics;
+using Unity.Physics.Systems;
 using Unity.Mathematics;
 using Unity.Rendering;
 using Unity.Transforms;
@@ -10,6 +12,7 @@ using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
 
 // Unmanaged systems can be BurstCompiled, tag needs to be on the struct itself, as well as derived methods of ISystem
+
 [BurstCompile]
 partial struct BallSystem : ISystem
 {
@@ -24,6 +27,7 @@ partial struct BallSystem : ISystem
     public void OnUpdate(ref SystemState state)
     {
 		var config = SystemAPI.GetSingleton<Config>();
+        var physicsWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
 
         if (config.setupStage >= 3) {
 			// Ball movement - only one ball
