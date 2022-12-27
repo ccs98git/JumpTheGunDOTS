@@ -20,7 +20,20 @@ public class RayCaster : MonoBehaviour
 
     private World wrld;
 
-    
+    public int dirInt = -1;
+    public static RayCaster Instance;
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            DestroyImmediate(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
     private void Start()
     {
@@ -51,15 +64,24 @@ public class RayCaster : MonoBehaviour
         {
             All = new ComponentType[] { ComponentType.ReadWrite<Config>() }
         });
+
         if (q.TryGetSingleton<Config>(out var singleton))
         {
-            // Do stuff
-            singleton.direction = DirectionByAngle(finalAngle);
-            Debug.Log(singleton.direction);
+            // Singleton Component Approach
+            //singleton.direction += DirectionByAngle(finalAngle);
+
+            /* // Entity Approach
+            wrld.EntityManager.SetComponentData<Config>(singleton, new Config { 
+                direction = DirectionByAngle(finalAngle)
+            });
+            */
+
+            //Debug.Log(singleton.direction);
         }
+
         var ent = q.GetSingletonEntity();
 
-
+        dirInt = DirectionByAngle(finalAngle);
     }
 
     // Returns the direction for the ball to go as an int.

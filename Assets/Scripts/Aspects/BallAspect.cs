@@ -6,7 +6,7 @@ using UnityEngine;
 
 readonly partial struct BallAspect : IAspect
 {
-    readonly RefRW<Ball> m_ball;
+    public readonly RefRW<Ball> m_ball;
     public readonly TransformAspect transform;
 }
 

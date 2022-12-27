@@ -24,18 +24,61 @@ partial struct BallSystem : ISystem
     { }
     [BurstCompile]
     public void OnDestroy(ref SystemState state) { }
-    [BurstCompile]
+    //[BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
 		var config = SystemAPI.GetSingleton<Config>();
-        var physicsWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
+        //var player = SystemAPI.GetSingleton<Ball>();
+        //var physicsWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
 
         if (config.setupStage >= 3) {
 			// Ball movement - only one ball
 			foreach (var player in SystemAPI.Query<BallAspect>())
-			{
+            {
                 
-             
+                if (RayCaster.Instance.dirInt == 0)
+                {
+                    var dir = new float3(0, 0, 0.01f);
+                    player.transform.LocalPosition += dir;
+                
+                }
+                else if (RayCaster.Instance.dirInt == 1) {
+                        var dir = new float3(0.005f, 0, 0.005f);
+                        player.transform.LocalPosition += dir;
+                }
+                else if (RayCaster.Instance.dirInt == 2)
+                {
+                    var dir = new float3(0.01f, 0, 0.0f);
+                    player.transform.LocalPosition += dir;
+                }
+                else if (RayCaster.Instance.dirInt == 3)
+                {
+                    var dir = new float3(0.005f, 0, -0.005f);
+                    player.transform.LocalPosition += dir;
+                }
+                else if (RayCaster.Instance.dirInt == 4)
+                {
+                    var dir = new float3(0.0f, 0, -0.01f);
+                    player.transform.LocalPosition += dir;
+                }
+                else if (RayCaster.Instance.dirInt == 5)
+                {
+                    var dir = new float3(-0.005f, 0, -0.005f);
+                    player.transform.LocalPosition += dir;
+                }
+                else if (RayCaster.Instance.dirInt == 6)
+                {
+                    var dir = new float3(-0.01f, 0, 0);
+                    player.transform.LocalPosition += dir;
+                }
+                else if (RayCaster.Instance.dirInt == 7)
+                {
+                    var dir = new float3(-0.005f, 0, 0.005f);
+                    player.transform.LocalPosition += dir;
+                }
+
+
+
             }
         }
 
