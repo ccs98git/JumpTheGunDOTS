@@ -1,13 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Unity.Entities;
 using Unity.Physics;
+using Unity.Transforms;
 using UnityEngine;
 
 
 public class RayCaster : MonoBehaviour
 {
+
     [SerializeField]
     Vector2 mousePos;
     Vector2 normalVec;
@@ -15,9 +18,9 @@ public class RayCaster : MonoBehaviour
     Vector2 mouseVector;
     float finalAngle;
 
-    private Entity en;
     private World wrld;
 
+    
 
     private void Start()
     {
@@ -42,14 +45,20 @@ public class RayCaster : MonoBehaviour
         }
 
 
-        DirectionByAngle(finalAngle);
-        /*
-        if (wrld.IsCreated && !wrld.EntityManager.Exists(en)) {
-            wrld.EntityManager
-                .GetBuffer<MouseAngleInput>(en)
-                .Add(new MouseAngleInput() { direction = DirectionByAngle(finalAngle) });
+        //DirectionByAngle(finalAngle);
+
+        EntityQuery q = wrld.EntityManager.CreateEntityQuery(new EntityQueryDesc()
+        {
+            All = new ComponentType[] { ComponentType.ReadWrite<Config>() }
+        });
+        if (q.TryGetSingleton<Config>(out var singleton))
+        {
+            // Do stuff
+            singleton.direction = DirectionByAngle(finalAngle);
+            Debug.Log(singleton.direction);
         }
-        */
+        var ent = q.GetSingletonEntity();
+
 
     }
 
@@ -57,53 +66,40 @@ public class RayCaster : MonoBehaviour
     private int DirectionByAngle(float ang) {
         if ((ang > 0 && ang < 22.5f) || (ang > 337.5f))
         {
-            Debug.Log("UU");
             return 0;
         }
         else if (ang < 67.5f)
         {
-            Debug.Log("UR");
             return 1;
         }
         else if (ang < 112.5f)
         {
-            Debug.Log("RR");
             return 2;
         }
         else if (ang < 157.5f)
         {
-            Debug.Log("RD");
             return 3;
         }
         else if (ang < 202.5f)
         {
-            Debug.Log("DD");
             return 4;
         }
         else if (ang < 247.5f)
         {
-            Debug.Log("DL");
             return 5;
         }
         else if (ang < 292.5f)
         {
-            Debug.Log("LL");
             return 6;
         }
         else if (ang < 337.5f)
         {
-            Debug.Log("LU");
             return 7;
         }
         else {
 
             Debug.Log("ERROR");
-            return 0;
+            return -1;
         }
-    }
-
-    public struct MouseAngleInput : IBufferElementData
-    {
-        public int direction;
     }
 }

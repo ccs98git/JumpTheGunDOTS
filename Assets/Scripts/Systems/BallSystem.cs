@@ -16,6 +16,7 @@ using static UnityEngine.GraphicsBuffer;
 [BurstCompile]
 partial struct BallSystem : ISystem
 {
+    
 
     // all ISystem derived methods need to be implemented, even if empty.
     [BurstCompile]
