@@ -19,6 +19,7 @@ struct Ball : IComponentData
     // Parabola Ref
     public Parabola par;
     public float parabolaTimePosition;
+    public bool isTraversing;
 
     // ?
     public float3 pos;

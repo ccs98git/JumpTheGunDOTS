@@ -31,7 +31,7 @@ partial struct BallSystem : ISystem
 
         // if false -> open up for new goal to be set.
         // Is by default true, as we later check if we are at the goal to assign a new one.
-        bool isTraversing = true;
+        //bool isTraversing = true;
 
         if (config.setupStage >= 3) {
             // Ball movement ---
@@ -49,6 +49,8 @@ partial struct BallSystem : ISystem
                 int yGridCurrent = player_ball.ValueRO.yGrid;
                 // zPos
 
+                bool isTraversing = player_ball.ValueRO.isTraversing;
+
                 int xGridGoal = player_ball.ValueRO.xGridGoal;
                 int yGridGoal = player_ball.ValueRO.yGridGoal;
 
@@ -57,9 +59,9 @@ partial struct BallSystem : ISystem
 
                 // Check to see that the ball is at it's destination. If it is - then make a new goal.
                 // If it is not - Then schedule traversal job.
-                if (xGridCurrent == xGridGoal && yGridCurrent == yGridGoal) {
-                    isTraversing = false;
-                }
+                //if (xGridCurrent == xGridGoal && yGridCurrent == yGridGoal) {
+                //    isTraversing = false;
+                //}
 
                 if (!isTraversing)
                 {
@@ -114,7 +116,12 @@ partial struct BallSystem : ISystem
                             break;    
                         }
                     }
+
+                player_ball.ValueRW.isTraversing = true;
                 }
+
+
+
                 else {
                     var parabolaData = player_ball.ValueRW.par;
                 //var localTime = SystemAPI.Time.DeltaTime / parabolaData.duration;
@@ -122,6 +129,7 @@ partial struct BallSystem : ISystem
                     if (player_ball.ValueRW.parabolaTimePosition >= 1)
                     {
                         player_ball.ValueRW.parabolaTimePosition = 0;
+                        player_ball.ValueRW.isTraversing = false;
                     }
 
                     var newTrans = new float3(
