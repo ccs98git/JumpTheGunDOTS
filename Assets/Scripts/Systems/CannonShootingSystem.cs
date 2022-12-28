@@ -23,6 +23,7 @@ public partial struct CannonShootingSystem : ISystem
     
     public void OnUpdate(ref SystemState state)
     {
+        var config = SystemAPI.GetSingletonRW<Config>();
         var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
         var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
         var playerTranslation = SystemAPI.GetComponent<Translation>(SystemAPI.GetSingletonEntity<Ball>());
@@ -40,20 +41,44 @@ public partial struct CannonShootingSystem : ISystem
                     duration = 1;
                 }
 
-                var bulletEntity = ecb.Instantiate(cannon.ValueRO.CannonBall);
-                ecb.SetComponent(bulletEntity, new Translation
+                var cannonBallEntity = ecb.Instantiate(cannon.ValueRO.CannonBall);
+                ecb.SetComponent(cannonBallEntity, new Translation
                 {
                     Value = translation.ValueRO.Value
                 });
-                float3 parabolaData = Parabola.Create(startPoint.x, 5, endPoint.y);
-                //parabolaData.x = startPoint.xz;
-                //parabolaData.y = endPoint.xz;
-                //parabolaData.z = duration;
-                //ecb.SetComponent(bulletEntity, parabolaData);
+                Parabola parabolaData = ParabolaSolve.Create(startPoint.y, 5, endPoint.y);
+                parabolaData.start = startPoint.xz;
+                parabolaData.end = endPoint.xz;
+                parabolaData.duration = duration;
+                ecb.SetComponent(cannonBallEntity, parabolaData);
             }
         }
        
         
+    }
+}
+public partial struct DestroyCannonBalls : ISystem
+{
+    public void OnCreate(ref SystemState state)
+    {
+
+    }
+
+    public void OnDestroy(ref SystemState state)
+    {
+
+    }
+
+    public void OnUpdate(ref SystemState state)
+    {
+        foreach (var (transPos, par, timerLife) in SystemAPI.Query<TransformAspect, RefRO<Parabola>, RefRO<Life>>().WithAll<CannonBall>())
+        {
+            if (timerLife.ValueRO.lifeTime >= par.ValueRO.duration)
+            {
+                transPos.Position = new float3(0, 20, 0);
+            }
+        }
+
     }
 }
 

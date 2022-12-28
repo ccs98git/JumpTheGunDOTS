@@ -22,17 +22,18 @@ public partial struct CannonBallMovementSystem : ISystem
 
     public void OnUpdate(ref SystemState state)
     {
+        
         foreach (var (cannonBallLife, parabolaData, translation) in SystemAPI.Query<RefRW<CannonBall>,
-                     RefRW<ParabolaData>, TransformAspect>())
+                     RefRW<Parabola>, TransformAspect>())
         {
-            var localTime = cannonBallLife.ValueRW + SystemAPI.Time.DeltaTime / parabolaData.ValueRO.duration;
+            var localTime = cannonBallLife.ValueRW.lifeLived.lifeTime + SystemAPI.Time.DeltaTime / parabolaData.ValueRO.duration;
             var newTrans = new float3(
-                math.lerp(parabolaData.ValueRO.startPoint.x, parabolaData.ValueRO.endPoint.x, localTime),
-                Parabola.Solve(parabolaData.ValueRW, localTime),
-                math.lerp(parabolaData.ValueRW.startPoint.y, parabolaData.ValueRW.endPoint.y, localTime));
+                math.lerp(parabolaData.ValueRO.start.x, parabolaData.ValueRO.end.x, localTime),
+                ParabolaSolve.Solve(parabolaData.ValueRW, localTime),
+                math.lerp(parabolaData.ValueRW.start.y, parabolaData.ValueRW.end.y, localTime));
 
             translation.Position = newTrans;
-            cannonBallLife.ValueRW = localTime;
+            cannonBallLife.ValueRW.lifeLived.lifeTime = localTime;
         }
 
 
