@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -13,8 +14,16 @@ readonly partial struct GroundAspect : IAspect
     public int xPos => m_ground.ValueRW.xPos;
     public int yPos => m_ground.ValueRW.yPos;   
     
+    public int color => m_ground.ValueRW.color;
+
 
     public void FlagCannon(bool b) {
         m_ground.ValueRW.hasCannon = b;
+    }
+
+    // For decrements of red color on the ground.
+    // Needs to be updated elsewhere. (Ground System?)
+    public void DecrementColor() {
+        m_ground.ValueRW.color -= 8;
     }
 }

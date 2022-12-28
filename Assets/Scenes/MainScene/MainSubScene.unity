@@ -173,3 +173,4 @@ MonoBehaviour:
   xScale: 5
   yScale: 5
   setupStage: 0
+  maxHeight: 9

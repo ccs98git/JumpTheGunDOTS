@@ -10,6 +10,9 @@ class ConfigAuthoring : UnityEngine.MonoBehaviour
     public int xScale;
     public int yScale;
     public int setupStage;
+    public int maxHeight;
+
+    public int direction;
 }
 
 // bakers convert authoring mb's into entities and components
@@ -24,7 +27,9 @@ class ConfigBaker : Baker<ConfigAuthoring>
             Cannon = GetEntity(authoring.CannonPrefab),
             xScale = authoring.xScale,
             yScale = authoring.yScale,
-            setupStage = authoring.setupStage
+            setupStage = authoring.setupStage,
+            maxHeight = authoring.maxHeight,
+            direction = authoring.direction
 
         }) ;
 
