@@ -4,5 +4,6 @@ using Unity.Entities;
 struct Cannon : IComponentData
 {
     public Entity CannonBall;
-
+    public Entity SpawnBallPoint;
+    public float coolDown;
 }

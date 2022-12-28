@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -16,5 +17,10 @@ readonly partial struct BallAspect : IAspect
     public int yGridGoal => m_ball.ValueRW.yGridGoal;
 
     public int currentDirection => m_ball.ValueRW.currentDirection;
+    public float3 Pos
+    {
+        get => transform.Position;
+        set => transform.Position = value;
+    }
 }
 

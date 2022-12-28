@@ -180,4 +180,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c269f5de38a82d48bcecc46f0170f60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CannonBallPrefab: {fileID: 7131216976966369865, guid: 0b58d9e33a8c5f647945b5284e5606ae, type: 3}
+  CannonBallPrefab: {fileID: 1609440466288968365, guid: 0884ee3c0900c144083562f8c144f06b, type: 3}
+  SpawnBallPoint: {fileID: 6781438973439577688}
