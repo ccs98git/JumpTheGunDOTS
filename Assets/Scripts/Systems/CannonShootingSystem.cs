@@ -26,15 +26,16 @@ public partial struct CannonShootingSystem : ISystem
         var config = SystemAPI.GetSingletonRW<Config>();
         var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
         var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
-        var playerTranslation = SystemAPI.GetComponent<Translation>(SystemAPI.GetSingletonEntity<Ball>());
-        foreach(var (cannon,translation) in SystemAPI.Query<RefRW<Cannon>,RefRW<Translation>>().WithAll<Cannon>()) {
+        var player = SystemAPI.GetSingletonEntity<Ball>();
+        var playerAspect = SystemAPI.GetAspectRW<BallAspect>(player);
+        foreach (var (cannon,translation) in SystemAPI.Query<RefRW<Cannon>,CannonAspect>().WithAll<Cannon>()) {
             cannon.ValueRW.coolDown += SystemAPI.Time.DeltaTime;
-            if (cannon.ValueRO.coolDown > 10.0f)
+            if (cannon.ValueRO.coolDown > 5.0f)
             {
                 cannon.ValueRW.coolDown = 0;
-                var endPoint = playerTranslation.Value;
-                var startPoint = translation.ValueRO.Value;
-                var distance = new Vector2(endPoint.z - startPoint.z, endPoint.x + startPoint.x).magnitude;
+                var endPoint = playerAspect.transform;
+                var startPoint = translation.transform.Position;
+                var distance = new Vector2(endPoint.Position.z - startPoint.z, endPoint.Position.x + startPoint.x).magnitude;
                 var duration = distance / 5.0f;
                 if (duration < 0.0001)
                 {
@@ -44,11 +45,11 @@ public partial struct CannonShootingSystem : ISystem
                 var cannonBallEntity = ecb.Instantiate(cannon.ValueRO.CannonBall);
                 ecb.SetComponent(cannonBallEntity, new Translation
                 {
-                    Value = translation.ValueRO.Value
+                    Value = translation.transform.Position
                 });
-                Parabola parabolaData = ParabolaSolve.Create(startPoint.y, 5, endPoint.y);
+                Parabola parabolaData = ParabolaSolve.Create(startPoint.y, config.ValueRO.maxHeight, endPoint.Position.y);
                 parabolaData.start = startPoint.xz;
-                parabolaData.end = endPoint.xz;
+                parabolaData.end = endPoint.Position.xz;
                 parabolaData.duration = duration;
                 ecb.SetComponent(cannonBallEntity, parabolaData);
             }
