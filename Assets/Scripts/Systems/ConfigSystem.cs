@@ -141,9 +141,17 @@ partial struct ConfigSystem : ISystem
 
                 // debug location
                 float3 DEBUG_playPosition = new float3(-1, 2, -1);
+                // dynamic location
+                float3 loc = new float3(xScale / 2, 2, yScale / 2);
+
                 ecb.SetComponent(e, new Translation
                 {
-                    Value = DEBUG_playPosition
+                    Value = loc
+                });
+                ecb.SetComponent(e, new Ball
+                {
+                    xGridGoal = xScale / 2,
+                    yGridGoal = yScale / 2
                 });
             }
         }

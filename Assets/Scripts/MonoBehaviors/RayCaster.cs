@@ -57,9 +57,10 @@ public class RayCaster : MonoBehaviour
             finalAngle = Vector2.Angle(mouseVector, normalVec) + 180.0f;
         }
 
+        dirInt = DirectionByAngle(finalAngle);
 
         //DirectionByAngle(finalAngle);
-
+        /*
         EntityQuery q = wrld.EntityManager.CreateEntityQuery(new EntityQueryDesc()
         {
             All = new ComponentType[] { ComponentType.ReadWrite<Config>() }
@@ -76,12 +77,13 @@ public class RayCaster : MonoBehaviour
             });
             */
 
-            //Debug.Log(singleton.direction);
+        //Debug.Log(singleton.direction);
+        /*
         }
 
         var ent = q.GetSingletonEntity();
+        */
 
-        dirInt = DirectionByAngle(finalAngle);
     }
 
     // Returns the direction for the ball to go as an int.
