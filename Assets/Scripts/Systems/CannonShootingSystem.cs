@@ -72,6 +72,7 @@ public partial struct DestroyCannonBalls : ISystem
 
     public void OnUpdate(ref SystemState state)
     {
+        /*
         foreach (var (transPos, par, timerLife) in SystemAPI.Query<TransformAspect, RefRO<Parabola>, RefRO<Life>>().WithAll<CannonBall>())
         {
             if (timerLife.ValueRO.lifeTime >= par.ValueRO.duration)
@@ -79,6 +80,7 @@ public partial struct DestroyCannonBalls : ISystem
                 transPos.Position = new float3(0, 20, 0);
             }
         }
+        */
 
     }
 }

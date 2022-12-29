@@ -22,7 +22,7 @@ public partial struct CannonBallMovementSystem : ISystem
 
     public void OnUpdate(ref SystemState state)
     {
-        
+
         foreach (var (life, parabolaData, translation) in SystemAPI.Query<RefRW<Life>,
                      RefRW<Parabola>, TransformAspect>())
         {
@@ -34,7 +34,11 @@ public partial struct CannonBallMovementSystem : ISystem
 
             translation.Position = newTrans;
             life.ValueRW.lifeTime = localTime;
+
+            
         }
+
+
 
 
 

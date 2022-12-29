@@ -23,15 +23,11 @@ partial struct BallSystem : ISystem
     { }
     [BurstCompile]
     public void OnDestroy(ref SystemState state) { }
+    
     //[BurstCompile]
-    // Omitting Burst compilation to access MB data
     public void OnUpdate(ref SystemState state)
     {
 		var config = SystemAPI.GetSingleton<Config>();
-
-        // if false -> open up for new goal to be set.
-        // Is by default true, as we later check if we are at the goal to assign a new one.
-        //bool isTraversing = true;
 
         if (config.setupStage >= 3) {
             // Ball movement ---
@@ -40,19 +36,17 @@ partial struct BallSystem : ISystem
             var player = SystemAPI.GetAspectRW<BallAspect>(player_entity);
 
                 // Write position (clamped) data to the ball.
-                player_ball.ValueRW.xGrid = (int)player.transform.Position.x;
-                player_ball.ValueRW.yGrid = (int)player.transform.Position.z;
+                // Needs to be rounded, as integer casting trunctuates it, making negative directions count twice for some reason.
+                player_ball.ValueRW.xGrid = (int)math.round(player.transform.Position.x);
+                player_ball.ValueRW.yGrid = (int)math.round(player.transform.Position.z);
                 player_ball.ValueRW.height = player.transform.Position.y;
 
                 // Read Data from Ball
                 int xGridCurrent = player_ball.ValueRO.xGrid;
                 int yGridCurrent = player_ball.ValueRO.yGrid;
-                // zPos
 
+                // if false -> open up for new goal to be set.
                 bool isTraversing = player_ball.ValueRO.isTraversing;
-
-                int xGridGoal = player_ball.ValueRO.xGridGoal;
-                int yGridGoal = player_ball.ValueRO.yGridGoal;
 
                 // Read the direction from RayCaster
                 //player_ball.ValueRW.currentDirection = RayCaster.Instance.dirInt;
@@ -66,11 +60,12 @@ partial struct BallSystem : ISystem
                 if (!isTraversing)
                 {
                     player_ball.ValueRW.currentDirection = RayCaster.Instance.dirInt;
+                    //AssignDirectionToBall(player_ball);
+                    
                     // Determine a new goal to the ball based on direction
                     if (player_ball.ValueRO.currentDirection == 0)
                     {
                         player_ball.ValueRW.yGridGoal = yGridCurrent + 1;
-
                     }
                     else if (player_ball.ValueRO.currentDirection == 1)
                     {
@@ -88,7 +83,6 @@ partial struct BallSystem : ISystem
                     }
                     else if (player_ball.ValueRO.currentDirection == 4)
                     {
-
                         player_ball.ValueRW.yGridGoal = yGridCurrent - 1;
                     }
                     else if (player_ball.ValueRO.currentDirection == 5)
@@ -109,10 +103,10 @@ partial struct BallSystem : ISystem
                 // Query Ground for goal tile
                     foreach (var groundA in SystemAPI.Query<GroundAspect>()) {
                         if (groundA.xPos == player_ball.ValueRO.xGridGoal && groundA.yPos == player_ball.ValueRO.yGridGoal) { 
-                            player_ball.ValueRW.par = ParabolaSolve.Create(player_ball.ValueRO.height, config.maxHeight, groundA.height * 0.2f);
+                            player_ball.ValueRW.par = ParabolaSolve.Create(player_ball.ValueRO.height, ((groundA.height *0.2f) + 2), groundA.height * 0.2f);
                             player_ball.ValueRW.par.start = new float2 (player_ball.ValueRO.xGrid, player_ball.ValueRO.yGrid);
                             player_ball.ValueRW.par.end = new float2(groundA.xPos,groundA.yPos);
-                            player_ball.ValueRW.par.duration = 1.0f;
+                            player_ball.ValueRW.par.duration = 1.5f;
                             break;    
                         }
                     }
@@ -120,27 +114,32 @@ partial struct BallSystem : ISystem
                 player_ball.ValueRW.isTraversing = true;
                 }
 
-
+                // --- If the ball is traversing - calculate position based on time. --- 
 
                 else {
                     var parabolaData = player_ball.ValueRW.par;
-                //var localTime = SystemAPI.Time.DeltaTime / parabolaData.duration;
                     player_ball.ValueRW.parabolaTimePosition += SystemAPI.Time.DeltaTime / parabolaData.duration;
-                    if (player_ball.ValueRW.parabolaTimePosition >= 1)
-                    {
-                        player_ball.ValueRW.parabolaTimePosition = 0;
-                        player_ball.ValueRW.isTraversing = false;
-                    }
+                    
 
                     var newTrans = new float3(
                         math.lerp(parabolaData.start.x, parabolaData.end.x, player_ball.ValueRW.parabolaTimePosition),
                         ParabolaSolve.Solve(parabolaData, player_ball.ValueRW.parabolaTimePosition),
                         math.lerp(parabolaData.start.y, parabolaData.end.y, player_ball.ValueRW.parabolaTimePosition));
 
+                    if (player_ball.ValueRW.parabolaTimePosition >= 1)
+                    {
+                        player_ball.ValueRW.xGrid = player_ball.ValueRO.xGridGoal;
+                        player_ball.ValueRW.yGrid = player_ball.ValueRO.yGridGoal;
 
-                    player.transform.LocalPosition = newTrans;
+                        player_ball.ValueRW.parabolaTimePosition = 0;
+                        player_ball.ValueRW.isTraversing = false;
+
+                }
+
+                player.transform.LocalPosition = newTrans;
 
                 //Schedule a job to move the ball towards it's current direction.
+                // Doesn't work because DOTS
                 /*
                 new UpdateBallPosJob
                 {
@@ -152,6 +151,16 @@ partial struct BallSystem : ISystem
         }
 
     }
+
+    //private void AssignDirectionToBall(RefRW<Ball> b) { b.ValueRW.currentDirection = RayCaster.Instance.dirInt; }
+    /*
+    [BurstCompile]
+    private void SetBallPosition(RefRW<Ball> b, int x, int y) { 
+        b.ValueRW.xGrid = x;
+        b.ValueRW.yGrid = y;
+    }
+    */
+
     /*
     [WithAll(typeof(Ball))]
     public partial struct UpdateBallPosJob : IJobEntity {

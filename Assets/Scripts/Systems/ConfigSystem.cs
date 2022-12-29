@@ -99,7 +99,7 @@ partial struct ConfigSystem : ISystem
 
             // cannon generation --
 
-            int cannonMemAlloc = groundMemAlloc / 10;
+            int cannonMemAlloc = groundMemAlloc / 25;
 
             var cannon = CollectionHelper.CreateNativeArray<Entity>(cannonMemAlloc, Allocator.Temp);
             ecb.Instantiate(config.ValueRW.Cannon, cannon);
@@ -153,6 +153,8 @@ partial struct ConfigSystem : ISystem
                     xGridGoal = xScale / 2,
                     yGridGoal = yScale / 2
                 });
+
+                
             }
         }
         else if (config.ValueRW.setupStage == 3) {
