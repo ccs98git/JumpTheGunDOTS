@@ -100,7 +100,7 @@ partial struct BallSystem : ISystem
                         player_ball.ValueRW.yGridGoal = yGridCurrent + 1;
                     }
 
-                // Checks if the destination is within game limits.
+                // Checks if the destination is within game limits. if not -> Stall ball
                 if (player_ball.ValueRO.xGridGoal >= 0 && player_ball.ValueRO.xGridGoal < config.xScale
                         && player_ball.ValueRO.yGridGoal >= 0 && player_ball.ValueRO.yGridGoal < config.yScale)
                 {
@@ -110,26 +110,27 @@ partial struct BallSystem : ISystem
                     {
                         if (groundA.xPos == player_ball.ValueRO.xGridGoal && groundA.yPos == player_ball.ValueRO.yGridGoal)
                         {
-                            player_ball.ValueRW.par = ParabolaSolve.Create(player_ball.ValueRO.height, ((groundA.height * 0.2f) + 2), groundA.height * 0.2f);
-                            player_ball.ValueRW.par.start = new float2(player_ball.ValueRO.xGrid, player_ball.ValueRO.yGrid);
-                            player_ball.ValueRW.par.end = new float2(groundA.xPos, groundA.yPos);
-                            player_ball.ValueRW.par.duration = 1.5f;
+                            if (!groundA.hasCannon)
+                            {
+                                // If the ground does not have a cannon, create parabola and resolve as normal
+                                player_ball.ValueRW.par = ParabolaSolve.Create(player_ball.ValueRO.height, ((groundA.height * 0.2f) + 2), groundA.height * 0.2f);
+                                player_ball.ValueRW.par.start = new float2(player_ball.ValueRO.xGrid, player_ball.ValueRO.yGrid);
+                                player_ball.ValueRW.par.end = new float2(groundA.xPos, groundA.yPos);
+                                player_ball.ValueRW.par.duration = 1.5f;
+                            } 
+                            else {
+                                // If the ground has a cannon, stall till propper input is given.
+                                StallBall(player_ball);
+                            }
                             break;
                         }
                     }
                 }
                 else {
-                    // bounce in place untill a valid direction is given.
-                    player_ball.ValueRW.par = ParabolaSolve.Create(player_ball.ValueRO.height, (4), player_ball.ValueRO.height);
-                    player_ball.ValueRW.par.start = new float2(player_ball.ValueRO.xGrid, player_ball.ValueRO.yGrid);
-                    player_ball.ValueRW.par.end = new float2(player_ball.ValueRO.xGrid, player_ball.ValueRO.yGrid);
-                    player_ball.ValueRW.par.duration = 1.5f;
-                    // - Make sure the goal numbers don't just build up in the background for every bad jump
-                    player_ball.ValueRW.xGridGoal = player_ball.ValueRO.xGrid;
-                    player_ball.ValueRW.yGridGoal = player_ball.ValueRO.yGrid;
+                    StallBall(player_ball);
                 }
 
-                player_ball.ValueRW.isTraversing = true;
+                    player_ball.ValueRW.isTraversing = true;
                 }
 
                 // --- If the ball is traversing - calculate position based on time. --- 
@@ -168,6 +169,20 @@ partial struct BallSystem : ISystem
             }
         }
 
+    }
+
+    // Stalls the ball by creating parabolas with the end centered on the start
+    // And resetting goal variables so they do not run away
+    [BurstCompile]
+    private void StallBall(RefRW<Ball> b) {
+        // bounce in place untill a valid direction is given.
+        b.ValueRW.par = ParabolaSolve.Create(b.ValueRO.height, (3), b.ValueRO.height);
+        b.ValueRW.par.start = new float2(b.ValueRO.xGrid, b.ValueRO.yGrid);
+        b.ValueRW.par.end = new float2(b.ValueRO.xGrid, b.ValueRO.yGrid);
+        b.ValueRW.par.duration = 1.5f;
+        // - Make sure the goal numbers don't just build up in the background for every bad jump
+        b.ValueRW.xGridGoal = b.ValueRO.xGrid;
+        b.ValueRW.yGridGoal = b.ValueRO.yGrid;
     }
 
     //private void AssignDirectionToBall(RefRW<Ball> b) { b.ValueRW.currentDirection = RayCaster.Instance.dirInt; }
