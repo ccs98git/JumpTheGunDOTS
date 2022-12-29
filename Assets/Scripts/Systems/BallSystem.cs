@@ -100,16 +100,34 @@ partial struct BallSystem : ISystem
                         player_ball.ValueRW.yGridGoal = yGridCurrent + 1;
                     }
 
-                // Query Ground for goal tile
-                    foreach (var groundA in SystemAPI.Query<GroundAspect>()) {
-                        if (groundA.xPos == player_ball.ValueRO.xGridGoal && groundA.yPos == player_ball.ValueRO.yGridGoal) { 
-                            player_ball.ValueRW.par = ParabolaSolve.Create(player_ball.ValueRO.height, ((groundA.height *0.2f) + 2), groundA.height * 0.2f);
-                            player_ball.ValueRW.par.start = new float2 (player_ball.ValueRO.xGrid, player_ball.ValueRO.yGrid);
-                            player_ball.ValueRW.par.end = new float2(groundA.xPos,groundA.yPos);
+                // Checks if the destination is within game limits.
+                if (player_ball.ValueRO.xGridGoal >= 0 && player_ball.ValueRO.xGridGoal < config.xScale
+                        && player_ball.ValueRO.yGridGoal >= 0 && player_ball.ValueRO.yGridGoal < config.yScale)
+                {
+
+                    // Query Ground for goal tile
+                    foreach (var groundA in SystemAPI.Query<GroundAspect>())
+                    {
+                        if (groundA.xPos == player_ball.ValueRO.xGridGoal && groundA.yPos == player_ball.ValueRO.yGridGoal)
+                        {
+                            player_ball.ValueRW.par = ParabolaSolve.Create(player_ball.ValueRO.height, ((groundA.height * 0.2f) + 2), groundA.height * 0.2f);
+                            player_ball.ValueRW.par.start = new float2(player_ball.ValueRO.xGrid, player_ball.ValueRO.yGrid);
+                            player_ball.ValueRW.par.end = new float2(groundA.xPos, groundA.yPos);
                             player_ball.ValueRW.par.duration = 1.5f;
-                            break;    
+                            break;
                         }
                     }
+                }
+                else {
+                    // bounce in place untill a valid direction is given.
+                    player_ball.ValueRW.par = ParabolaSolve.Create(player_ball.ValueRO.height, (4), player_ball.ValueRO.height);
+                    player_ball.ValueRW.par.start = new float2(player_ball.ValueRO.xGrid, player_ball.ValueRO.yGrid);
+                    player_ball.ValueRW.par.end = new float2(player_ball.ValueRO.xGrid, player_ball.ValueRO.yGrid);
+                    player_ball.ValueRW.par.duration = 1.5f;
+                    // - Make sure the goal numbers don't just build up in the background for every bad jump
+                    player_ball.ValueRW.xGridGoal = player_ball.ValueRO.xGrid;
+                    player_ball.ValueRW.yGridGoal = player_ball.ValueRO.yGrid;
+                }
 
                 player_ball.ValueRW.isTraversing = true;
                 }
