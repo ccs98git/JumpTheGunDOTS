@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Unity.Entities;
 using UnityEngine;
 
-public struct Life : IComponentData
+public struct TimePar : IComponentData
 {
-    public float lifeTime;
+    public float parTime;
 }
 

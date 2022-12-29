@@ -1,4 +1,5 @@
 using Unity.Entities;
+using Unity.VisualScripting;
 
 // Authoring MonoBehaviors are regular gameObject components.
 class CannonAuthoring : UnityEngine.MonoBehaviour

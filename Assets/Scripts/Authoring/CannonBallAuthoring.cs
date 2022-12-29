@@ -15,9 +15,9 @@ class CannonBallBaker: Baker<CannonBallAuthoring>
         {
             duration = 00001f
         });
-        AddComponent(new Life
+        AddComponent(new TimePar
         {
-            lifeTime = 0
+            parTime = 0
         });
     }
 }
