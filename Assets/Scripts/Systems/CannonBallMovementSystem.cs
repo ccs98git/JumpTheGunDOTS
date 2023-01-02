@@ -62,7 +62,7 @@ public partial struct DestroyCannonBalls : ISystem
         var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
         foreach (var (transPos, par, timerLife, entity) in SystemAPI.Query<CannonBall, RefRO<Parabola>, RefRO<TimePar>>().WithAll<CannonBall>().WithEntityAccess())
         {
-            if (timerLife.ValueRO.parTime >= par.ValueRO.duration)
+            if (timerLife.ValueRO.parTime >= 1.0f)
             {
                 ecb.DestroyEntity(entity);
             }
