@@ -175,3 +175,4 @@ MonoBehaviour:
   setupStage: 0
   maxHeight: 9
   direction: 0
+  cannonCooldown: 10
