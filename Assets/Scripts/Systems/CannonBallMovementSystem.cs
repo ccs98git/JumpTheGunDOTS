@@ -106,8 +106,7 @@ public partial struct DestroyCannonBalls : ISystem
                             });
 
                             
-                            // update last - shadow updating causes some funky buisness going on.
-                            
+                            // update last
                             ecb.SetComponent(groundEntity, new Ground
                             {
                                 height = newheight,
