@@ -30,7 +30,7 @@ public partial struct CannonShootingSystem : ISystem
         var playerAspect = SystemAPI.GetAspectRW<BallAspect>(player);
         foreach (var (cannon,translation) in SystemAPI.Query<RefRW<Cannon>,CannonAspect>().WithAll<Cannon>()) {
             cannon.ValueRW.coolDown += SystemAPI.Time.DeltaTime; 
-            if (cannon.ValueRO.coolDown > 7.0f)
+            if (cannon.ValueRO.coolDown > 10.0f)
             {
                 cannon.ValueRW.coolDown = UnityEngine.Random.Range(1, 7);
                 var endPoint = playerAspect.transform;
