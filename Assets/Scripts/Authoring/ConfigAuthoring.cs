@@ -13,6 +13,7 @@ class ConfigAuthoring : UnityEngine.MonoBehaviour
     public int maxHeight;
 
     public int direction;
+    public float cannonCooldown;
 }
 
 // bakers convert authoring mb's into entities and components
@@ -29,7 +30,8 @@ class ConfigBaker : Baker<ConfigAuthoring>
             yScale = authoring.yScale,
             setupStage = authoring.setupStage,
             maxHeight = authoring.maxHeight,
-            direction = authoring.direction
+            direction = authoring.direction,
+            cannonCooldown = authoring.cannonCooldown
 
         }) ;
 

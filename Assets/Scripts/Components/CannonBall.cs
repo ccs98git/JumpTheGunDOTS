@@ -7,7 +7,6 @@ using UnityEngine.Rendering;
 
 public struct CannonBall : IComponentData
 {
-    //public float2 start;
-    // float2 end;
-    //public float duration;
+    public Parabola par;
+    public TimePar TimerPar;
 }

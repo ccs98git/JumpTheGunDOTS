@@ -11,6 +11,13 @@ class CannonBallBaker: Baker<CannonBallAuthoring>
     public override void Bake(CannonBallAuthoring authoring)
     {
         AddComponent<CannonBall>();
-        //AddComponent(new float3 );
+        AddComponent(new Parabola
+        {
+            duration = 00001f
+        });
+        AddComponent(new TimePar
+        {
+            parTime = 0
+        });
     }
 }

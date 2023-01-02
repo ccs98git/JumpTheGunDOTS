@@ -23,33 +23,35 @@ public partial struct CannonShootingSystem : ISystem
     
     public void OnUpdate(ref SystemState state)
     {
+        var config = SystemAPI.GetSingletonRW<Config>();
         var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
         var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
-        var playerTranslation = SystemAPI.GetComponent<Translation>(SystemAPI.GetSingletonEntity<Ball>());
-        foreach(var (cannon,translation) in SystemAPI.Query<RefRW<Cannon>,RefRW<Translation>>().WithAll<Cannon>()) {
-            cannon.ValueRW.coolDown += SystemAPI.Time.DeltaTime;
-            if (cannon.ValueRO.coolDown > 10.0f)
+        var player = SystemAPI.GetSingletonEntity<Ball>();
+        var playerAspect = SystemAPI.GetAspectRW<BallAspect>(player);
+        foreach (var (cannon,translation) in SystemAPI.Query<RefRW<Cannon>,CannonAspect>().WithAll<Cannon>()) {
+            cannon.ValueRW.coolDown += SystemAPI.Time.DeltaTime; 
+            if (cannon.ValueRO.coolDown > config.ValueRO.cannonCooldown)
             {
-                cannon.ValueRW.coolDown = 0;
-                var endPoint = playerTranslation.Value;
-                var startPoint = translation.ValueRO.Value;
-                var distance = new Vector2(endPoint.z - startPoint.z, endPoint.x + startPoint.x).magnitude;
+                cannon.ValueRW.coolDown = UnityEngine.Random.Range(1, config.ValueRO.cannonCooldown);
+                var endPoint = playerAspect.transform;
+                var startPoint = translation.transform.Position;
+                var distance = new Vector2(endPoint.Position.z - startPoint.z, endPoint.Position.x + startPoint.x).magnitude;
                 var duration = distance / 5.0f;
                 if (duration < 0.0001)
                 {
                     duration = 1;
                 }
 
-                var bulletEntity = ecb.Instantiate(cannon.ValueRO.CannonBall);
-                ecb.SetComponent(bulletEntity, new Translation
+                var cannonBallEntity = ecb.Instantiate(cannon.ValueRO.CannonBall);
+                ecb.SetComponent(cannonBallEntity, new Translation
                 {
-                    Value = translation.ValueRO.Value
+                    Value = translation.transform.Position
                 });
-                float3 parabolaData = Parabola.Create(startPoint.x, 5, endPoint.y);
-                //parabolaData.x = startPoint.xz;
-                //parabolaData.y = endPoint.xz;
-                //parabolaData.z = duration;
-                //ecb.SetComponent(bulletEntity, parabolaData);
+                Parabola parabolaData = ParabolaSolve.Create(startPoint.y, config.ValueRO.maxHeight, endPoint.Position.y);
+                parabolaData.start = startPoint.xz;
+                parabolaData.end = endPoint.Position.xz;
+                parabolaData.duration = duration;
+                ecb.SetComponent(cannonBallEntity, parabolaData);
             }
         }
        

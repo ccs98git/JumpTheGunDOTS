@@ -170,7 +170,8 @@ MonoBehaviour:
   GroundPrefab: {fileID: 176346350372098373, guid: 7e6783b88f6c72e4e95de4fd3fb6df00, type: 3}
   BallPrefab: {fileID: 7131216976966369865, guid: 0b58d9e33a8c5f647945b5284e5606ae, type: 3}
   CannonPrefab: {fileID: 5274172679912965586, guid: 5d16ff16a5f8b1a42b7c371898026a8b, type: 3}
-  xScale: 5
-  yScale: 5
+  xScale: 10
+  yScale: 10
   setupStage: 0
   maxHeight: 9
+  direction: 0

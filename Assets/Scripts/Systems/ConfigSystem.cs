@@ -44,7 +44,7 @@ partial struct ConfigSystem : ISystem
 
             int ix = 0;
             int iy = 0;
-            float heightIndex = 0; // <- random height, multiplied by magnitude 2.0f
+            float heightIndex = 0; // <- random height, multiplied by magnitude .2f
 
             foreach (Entity e in terrain)
             {
@@ -66,10 +66,10 @@ partial struct ConfigSystem : ISystem
                 });
 
                 // Color Generation based on height:
-                float heightColor = 85f;
+                int heightColor = 85;
                 for (int i = rand; i > 0; i--)
                 {
-                    heightColor -= 8f;
+                    heightColor -= 8;
                 }
                 Vector3 flatColor = new Vector3(heightColor, 202f, 56f).normalized; //<- not sure if/why this works, or if it works as intended.
                 Color newColor = UnityEngine.Color.HSVToRGB(flatColor.x, flatColor.y, flatColor.z);
@@ -84,9 +84,9 @@ partial struct ConfigSystem : ISystem
                 {
                     height = rand, // <- assignment of height index
                     hasCannon = false,
-                    //xy = (ix, iy)
                     xPos = ix,
-                    yPos = iy
+                    yPos = iy,
+                    color = heightColor
                 });
 
                 if (ix % (xScale - 1) == 0 && ix != 0) { iy++; ix = 0; }
@@ -99,7 +99,7 @@ partial struct ConfigSystem : ISystem
 
             // cannon generation --
 
-            int cannonMemAlloc = groundMemAlloc / 10;
+            int cannonMemAlloc = groundMemAlloc / 25; // 1 cannon per 25 tiles
 
             var cannon = CollectionHelper.CreateNativeArray<Entity>(cannonMemAlloc, Allocator.Temp);
             ecb.Instantiate(config.ValueRW.Cannon, cannon);
@@ -139,12 +139,22 @@ partial struct ConfigSystem : ISystem
             
             foreach (Entity e in playerMem) {
 
-                // debug location
-                float3 DEBUG_playPosition = new float3(-1, 2, -1);
+                // debug location - Out of Bounds
+                //float3 DEBUG_playPosition = new float3(-1, 2, -1);
+                // dynamic location
+                float3 loc = new float3(xScale / 2, 2, yScale / 2);
+
                 ecb.SetComponent(e, new Translation
                 {
-                    Value = DEBUG_playPosition
+                    Value = loc
                 });
+                ecb.SetComponent(e, new Ball
+                {
+                    xGridGoal = xScale / 2,
+                    yGridGoal = yScale / 2
+                });
+
+                
             }
         }
         else if (config.ValueRW.setupStage == 3) {
