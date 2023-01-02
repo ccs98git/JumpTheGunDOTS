@@ -58,30 +58,4 @@ public partial struct CannonShootingSystem : ISystem
         
     }
 }
-public partial struct DestroyCannonBalls : ISystem
-{
-    public void OnCreate(ref SystemState state)
-    {
-
-    }
-
-    public void OnDestroy(ref SystemState state)
-    {
-
-    }
-
-    public void OnUpdate(ref SystemState state)
-    {
-        /*
-        foreach (var (transPos, par, timerLife) in SystemAPI.Query<TransformAspect, RefRO<Parabola>, RefRO<Life>>().WithAll<CannonBall>())
-        {
-            if (timerLife.ValueRO.lifeTime >= par.ValueRO.duration)
-            {
-                transPos.Position = new float3(0, 20, 0);
-            }
-        }
-        */
-
-    }
-}
 

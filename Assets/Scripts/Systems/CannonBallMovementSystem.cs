@@ -44,3 +44,30 @@ public partial struct CannonBallMovementSystem : ISystem
 
     }
 }
+public partial struct DestroyCannonBalls : ISystem
+{
+    public void OnCreate(ref SystemState state)
+    {
+
+    }
+
+    public void OnDestroy(ref SystemState state)
+    {
+
+    }
+
+    public void OnUpdate(ref SystemState state)
+    {
+        var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
+        var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
+        foreach (var (transPos, par, timerLife, entity) in SystemAPI.Query<CannonBall, RefRO<Parabola>, RefRO<TimePar>>().WithAll<CannonBall>().WithEntityAccess())
+        {
+            if (timerLife.ValueRO.parTime >= par.ValueRO.duration)
+            {
+                ecb.DestroyEntity(entity);
+            }
+        }
+        
+
+    }
+}
