@@ -16,5 +16,7 @@ struct Config : IComponentData
     public int setupStage;
 
     public int direction;
+
+    public float cannonCooldown;
 }
 

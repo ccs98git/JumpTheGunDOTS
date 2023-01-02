@@ -30,9 +30,9 @@ public partial struct CannonShootingSystem : ISystem
         var playerAspect = SystemAPI.GetAspectRW<BallAspect>(player);
         foreach (var (cannon,translation) in SystemAPI.Query<RefRW<Cannon>,CannonAspect>().WithAll<Cannon>()) {
             cannon.ValueRW.coolDown += SystemAPI.Time.DeltaTime; 
-            if (cannon.ValueRO.coolDown > 10.0f)
+            if (cannon.ValueRO.coolDown > config.ValueRO.cannonCooldown)
             {
-                cannon.ValueRW.coolDown = UnityEngine.Random.Range(1, 7);
+                cannon.ValueRW.coolDown = UnityEngine.Random.Range(1, config.ValueRO.cannonCooldown);
                 var endPoint = playerAspect.transform;
                 var startPoint = translation.transform.Position;
                 var distance = new Vector2(endPoint.Position.z - startPoint.z, endPoint.Position.x + startPoint.x).magnitude;

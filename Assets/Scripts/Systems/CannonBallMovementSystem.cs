@@ -119,11 +119,11 @@ public partial struct DestroyCannonBalls : ISystem
 
                             
                             
-                            //break; // <- since each cannonball only has one desitnation, we can break
+                            break; // <- since each cannonball only has one desitnation, we can break
                             // the loop and carry on at this point.
                         }
                         else {
-                            //break; // found tile, no edits needed. Break loop since same logic as above.
+                            break; // found tile, no edits needed. Break loop since same logic as above.
                         }
 
                     }
