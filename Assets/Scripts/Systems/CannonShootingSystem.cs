@@ -5,11 +5,11 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.TerrainUtils;
-
+[BurstCompile]
 public partial struct CannonShootingSystem : ISystem
 {
 
-    
+    [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<Ball>();
@@ -20,7 +20,7 @@ public partial struct CannonShootingSystem : ISystem
     {
         
     }
-    
+    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         var config = SystemAPI.GetSingletonRW<Config>();

@@ -1,9 +1,11 @@
+using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.VisualScripting;
-
+[BurstCompile]
 public static class ParabolaSolve
 {
+    [BurstCompile]
     public static Parabola Create(float startY, float height, float endY)
     {
         Parabola par = new Parabola();
@@ -18,9 +20,7 @@ public static class ParabolaSolve
         return par;
     }
 
-    /// <summary>
-    /// Solves a parabola (in the form y = a*t*t + b*t + c) for y.
-    /// </summary>
+    [BurstCompile]
     public static float Solve(Parabola data, float t)
     {
         return data.a * t * t + data.b * t + data.c;

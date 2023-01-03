@@ -1,11 +1,12 @@
 using System.Drawing;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine.UIElements;
-
+[BurstCompile]
 public partial struct BallCollisionSystem : ISystem
 {
     //private EntityCommandBufferSystem ECB;
@@ -14,11 +15,12 @@ public partial struct BallCollisionSystem : ISystem
     {
         //throw new System.NotImplementedException();
     }
-
+    [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<Ball>();
     }
+    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();

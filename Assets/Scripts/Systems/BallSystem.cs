@@ -23,7 +23,7 @@ partial struct BallSystem : ISystem
     { }
     [BurstCompile]
     public void OnDestroy(ref SystemState state) { }
-    
+    [BurstCompile]
     //[BurstCompile]
     public void OnUpdate(ref SystemState state)
     {

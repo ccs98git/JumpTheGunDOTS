@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Rendering;
 using Unity.Transforms;
 using UnityEngine;
-
+[BurstCompile]
 public partial struct CannonBallMovementSystem : ISystem
 {
 
@@ -21,7 +22,7 @@ public partial struct CannonBallMovementSystem : ISystem
     {
 
     }
-
+    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
 
@@ -46,6 +47,7 @@ public partial struct CannonBallMovementSystem : ISystem
 
     }
 }
+[BurstCompile]
 public partial struct DestroyCannonBalls : ISystem
 {
     public void OnCreate(ref SystemState state)
@@ -57,7 +59,7 @@ public partial struct DestroyCannonBalls : ISystem
     {
 
     }
-
+    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
