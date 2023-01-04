@@ -11,6 +11,8 @@ using JetBrains.Annotations;
 using static Unity.Burst.Intrinsics.X86.Avx;
 using System.Net;
 using System.Runtime.InteropServices;
+using Unity.VisualScripting.FullSerializer;
+using Unity.Jobs;
 
 [BurstCompile]
 partial struct BallSystem : ISystem
@@ -57,12 +59,19 @@ partial struct BallSystem : ISystem
 
                 if (!isTraversing)
                 {
-                player_ball.ValueRW.currentDirection = config.direction;
-                //AssignDirectionToBall(player_ball);
-                    
+                
+                    player_ball.ValueRW.currentDirection = config.direction;
+                    UpdateBallDirectionJob dirJob = new UpdateBallDirectionJob
+                    {
+                        direction = new NativeArray<int>(1, Allocator.TempJob) { [0] = config.direction },
+                        ball = new NativeArray<RefRW<Ball>>(1, Allocator.TempJob) { [0] = player_ball }, // <- access to the ball singleton
+                        currentLocation = new NativeArray<(int, int)>(1, Allocator.TempJob) { [0] = (xGridCurrent, yGridCurrent) }, // (x, y)
+                    };
 
+                    dirJob.Run();
                     
                     // Determine a new goal to the ball based on direction
+                    /*
                     if (player_ball.ValueRO.currentDirection == 0)
                     {
                         player_ball.ValueRW.yGridGoal = yGridCurrent + 1;
@@ -99,6 +108,7 @@ partial struct BallSystem : ISystem
                         player_ball.ValueRW.xGridGoal = xGridCurrent - 1;
                         player_ball.ValueRW.yGridGoal = yGridCurrent + 1;
                     }
+                    */
 
                 // Checks if the destination is within game limits. if not -> Stall ball
                 if (player_ball.ValueRO.xGridGoal >= 0 && player_ball.ValueRO.xGridGoal < config.xScale
@@ -136,6 +146,7 @@ partial struct BallSystem : ISystem
                 // --- If the ball is traversing - calculate position based on time. --- 
 
                 else {
+                
                     var parabolaData = player_ball.ValueRW.par;
                     player_ball.ValueRW.parabolaTimePosition += SystemAPI.Time.DeltaTime / parabolaData.duration;
                     
@@ -152,7 +163,7 @@ partial struct BallSystem : ISystem
 
                         player_ball.ValueRW.parabolaTimePosition = 0;
                         player_ball.ValueRW.isTraversing = false;
-
+                
                 }
 
                 player.transform.LocalPosition = newTrans;
@@ -169,6 +180,83 @@ partial struct BallSystem : ISystem
             }
         }
 
+    }
+    [BurstCompile]
+    [WithAll(typeof(Ball))]
+    public partial struct UpdateBallPositionJob : IJobEntity
+    {
+        public NativeArray<int> direction; // <- needs to be read by config
+        public NativeArray<RefRW<Ball>> ball; // <- access to the ball singleton
+        public NativeArray<(int, int)> locations; // (x, y) - current then goal
+
+        public void Execute() { 
+            
+        }
+    }
+
+
+        [BurstCompile]
+    [WithAll(typeof(Ball))]
+    public partial struct UpdateBallDirectionJob : IJobEntity
+    {
+        public NativeArray<int> direction; // <- needs to be read by config
+        public NativeArray<RefRW<Ball>> ball; // <- access to the ball singleton
+        public NativeArray<(int,int)> currentLocation; // (x, y)
+        public void Execute() {
+            // code
+            int dir = direction[0];
+            ball[0].ValueRW.currentDirection = direction[0];
+
+            // Determine a new goal to the ball based on direction
+            if (dir == 0)
+            {
+                ball[0].ValueRW.yGridGoal = currentLocation[0].Item2 + 1;
+            }
+            else if (dir == 1)
+            {
+                ball[0].ValueRW.xGridGoal = currentLocation[0].Item1 + 1;
+                ball[0].ValueRW.yGridGoal = currentLocation[0].Item2 + 1;
+            }
+            else if (dir == 2)
+            {
+                ball[0].ValueRW.xGridGoal = currentLocation[0].Item1 + 1;
+
+            }
+            else if (dir == 3)
+            {
+                ball[0].ValueRW.xGridGoal = currentLocation[0].Item1 + 1;
+                ball[0].ValueRW.yGridGoal = currentLocation[0].Item2 - 1;
+            }
+            else if (dir == 4)
+            {
+                ball[0].ValueRW.yGridGoal = currentLocation[0].Item2 - 1;
+            }
+            else if (dir == 5)
+            {
+                ball[0].ValueRW.xGridGoal = currentLocation[0].Item1 - 1;
+                ball[0].ValueRW.yGridGoal = currentLocation[0].Item2 - 1;
+            }
+            else if (dir == 6)
+            {
+                ball[0].ValueRW.xGridGoal = currentLocation[0].Item1 - 1;
+            }
+            else if (dir == 7)
+            {
+                ball[0].ValueRW.xGridGoal = currentLocation[0].Item1 - 1;
+                ball[0].ValueRW.yGridGoal = currentLocation[0].Item2 + 1;
+            }
+        }
+
+        /*
+         player_ball.ValueRW.currentDirection = config.direction;
+
+                // Determine a new goal to the ball based on direction
+                if (player_ball.ValueRO.currentDirection == 0)
+                {
+                    player_ball.ValueRW.yGridGoal = yGridCurrent + 1;
+                }
+
+         */
     }
 
     // Stalls the ball by creating parabolas with the end centered on the start
