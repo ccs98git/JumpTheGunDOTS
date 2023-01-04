@@ -153,8 +153,12 @@ partial struct ConfigSystem : ISystem
                     xGridGoal = xScale / 2,
                     yGridGoal = yScale / 2
                 });
+                ecb.AddComponent(e, new NonUniformScale
+                {
+                    Value = new float3(0.6f, 0.6f, 0.6f)
+                });
 
-                
+
             }
         }
         else if (config.ValueRW.setupStage == 3) {

@@ -1,8 +1,8 @@
 using Unity.Burst;
 using Unity.Entities;
 using Unity.Transforms;
-[BurstCompile]
 // - Taken from the DOTS examples
+
 public partial class CameraSystem : SystemBase
 {
     protected override void OnUpdate()
@@ -10,7 +10,7 @@ public partial class CameraSystem : SystemBase
         new UpdateCameraJob().Run();
     }
 }
-[BurstCompile]
+
 [WithAll(typeof(Ball))]
 public partial struct UpdateCameraJob : IJobEntity
 {

@@ -41,10 +41,6 @@ public partial struct CannonBallMovementSystem : ISystem
             
         }
 
-
-
-
-
     }
 }
 [BurstCompile]

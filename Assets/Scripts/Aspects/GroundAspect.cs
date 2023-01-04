@@ -20,11 +20,4 @@ readonly partial struct GroundAspect : IAspect
         m_ground.ValueRW.hasCannon = b;
     }
 
-    // For decrements of red color on the ground.
-    // Needs to be updated elsewhere. (Ground System?)
-    /*
-    public void DecrementColor() {
-        m_ground.ValueRW.color -= 8;
-    }
-    */
 }

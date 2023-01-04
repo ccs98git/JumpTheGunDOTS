@@ -15,16 +15,14 @@ using System.Runtime.InteropServices;
 [BurstCompile]
 partial struct BallSystem : ISystem
 {
-    
-
     // all ISystem derived methods need to be implemented, even if empty.
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     { }
     [BurstCompile]
     public void OnDestroy(ref SystemState state) { }
+
     [BurstCompile]
-    //[BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
 		var config = SystemAPI.GetSingleton<Config>();
@@ -59,8 +57,10 @@ partial struct BallSystem : ISystem
 
                 if (!isTraversing)
                 {
-                    player_ball.ValueRW.currentDirection = RayCaster.Instance.dirInt;
-                    //AssignDirectionToBall(player_ball);
+                player_ball.ValueRW.currentDirection = config.direction;
+                //AssignDirectionToBall(player_ball);
+                    
+
                     
                     // Determine a new goal to the ball based on direction
                     if (player_ball.ValueRO.currentDirection == 0)
@@ -113,7 +113,7 @@ partial struct BallSystem : ISystem
                             if (!groundA.hasCannon)
                             {
                                 // If the ground does not have a cannon, create parabola and resolve as normal
-                                player_ball.ValueRW.par = ParabolaSolve.Create(player_ball.ValueRO.height, ((groundA.height * 0.2f) + 2), groundA.height * 0.2f);
+                                player_ball.ValueRW.par = ParabolaSolve.Create(player_ball.ValueRO.height + 0.2f, ((groundA.height * 0.2f) + 2), (groundA.height * 0.2f) + 0.2f);
                                 player_ball.ValueRW.par.start = new float2(player_ball.ValueRO.xGrid, player_ball.ValueRO.yGrid);
                                 player_ball.ValueRW.par.end = new float2(groundA.xPos, groundA.yPos);
                                 player_ball.ValueRW.par.duration = 1.5f;
