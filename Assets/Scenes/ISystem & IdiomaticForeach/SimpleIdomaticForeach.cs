@@ -20,7 +20,7 @@ public partial struct SimpleIdomaticForeach : ISystem
     public void OnUpdate(ref SystemState state)
     {
         var dt = SystemAPI.Time.DeltaTime;
-       
+       /*
        foreach (var localworldTransform in SystemAPI.Query<RefRW<LocalToParentTransform>>())
        {
            localworldTransform.ValueRW.Value = localworldTransform.ValueRO.Value.Translate(new float3(0, 0, 0.01f));
@@ -29,6 +29,6 @@ public partial struct SimpleIdomaticForeach : ISystem
        foreach (var (lwt, speed) in SystemAPI.Query<RefRW<LocalToWorldTransform>, RefRO<IFESpeed>>().WithNone<DoNotMoveTag>())
        {
            lwt.ValueRW.Value = lwt.ValueRO.Value.RotateZ(speed.ValueRO.Value * dt);
-       }
+       }*/
     }
 }

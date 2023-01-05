@@ -33,11 +33,11 @@ public partial struct AspectExampleSystem : ISystem
 
 readonly partial struct SinAspect : IAspect
 {
-    readonly RefRW<LocalToWorldTransform> m_Transform;
+    //readonly RefRW<LocalToWorldTransform> m_Transform;
     readonly RefRO<moveSpeed> m_Speed;
 
     public void Move(double elapsedTime)
     {
-        m_Transform.ValueRW.Value.Position.y = (float)math.sin(elapsedTime * m_Speed.ValueRO.Value);
+        //m_Transform.ValueRW.Value.Position.y = (float)math.sin(elapsedTime * m_Speed.ValueRO.Value);
     }
 }

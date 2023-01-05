@@ -152,7 +152,8 @@ PlayerSettings:
   resetResolutionOnWindowResize: 0
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
-  applicationIdentifier: {}
+  applicationIdentifier:
+    Standalone: com.DefaultCompany.DOTS-Example-Project-1.0-exp
   buildNumber:
     Standalone: 0
     iPhone: 0
@@ -636,7 +637,8 @@ PlayerSettings:
   webGLMemoryLinearGrowthStep: 16
   webGLMemoryGeometricGrowthStep: 0.2
   webGLMemoryGeometricGrowthCap: 96
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    Standalone: ENABLE_TRANSFORM_V1
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
@@ -658,8 +660,8 @@ PlayerSettings:
     Standalone: 3
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: DOTS Example Project 1.0 exp
-  metroPackageVersion: 
+  metroPackageName: DOTSExampleProject1.0exp
+  metroPackageVersion: 1.0.0.0
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
@@ -667,7 +669,7 @@ PlayerSettings:
   metroCertificateNotAfter: 0000000000000000
   metroApplicationDescription: DOTS Example Project 1.0 exp
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: DOTS Example Project 1.0 exp
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
