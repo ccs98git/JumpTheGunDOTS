@@ -162,6 +162,7 @@ partial struct ConfigSystem : ISystem
             }
         }
         else if (config.ValueRW.setupStage == 3) {
+            //ecb.Dispose(); // <- causes ungodly amount of errors, 
             state.Enabled = false;
         }
 
